@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=0.9, minimum-scale=0.9">
     <script src='https://cdn.tailwindcss.com/3.2.0'></script>
     <link href="https://fonts.googleapis.com/css2?family=Italianno&family=Inria+Serif&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+
     <style>
         /* Reset Styles */
         a, button, input, select, h1, h2, h3, h4, h5, * {
@@ -924,7 +928,7 @@
               </div>
               
               <!-- Comments Section -->
-              <div class="bg-white/60 rounded-xl p-6 mt-8 animate-scale-in delay-500">
+              <div class="bg-white rounded-xl p-6 mt-8 animate-scale-in delay-500">
                   <div id="commentsContainer" class="comments-container space-y-6 divide-y">
                       <!-- Comments will be inserted here dynamically -->
                   </div>
@@ -937,72 +941,173 @@
           </footer>
           </div>
           <script>
-            // Initialize comments array from localStorage or empty array
-            let comments = JSON.parse(localStorage.getItem('guestComments')) || [];
+            // Initialize Firebase
+            try {
+                const firebaseConfig = {
+                    apiKey: "AIzaSyCTGRyDDn9hS_YfGIwgvWffZtLWpfsdW6E",
+                    authDomain: "guestbook-92467.firebaseapp.com",
+                    projectId: "guestbook-92467",
+                    storageBucket: "guestbook-92467.firebasestorage.app",
+                    messagingSenderId: "967737540824",
+                    appId: "1:967737540824:web:a1ac7239b5e9b9f5ed57ad",
+                    measurementId: "G-DE9KKCE162"
+                };
             
-            function handleSubmit(event) {
-            event.preventDefault();
-            
-            const name = document.getElementById('guestName').value;
-            const message = document.getElementById('guestMessage').value;
-            const attendance = document.querySelector('input[name="attendance"]:checked').value;
-            
-            // Create new comment object
-            const newComment = {
-                name,
-                message,
-                attendance,
-                timestamp: new Date().toISOString()
-            };
-            
-            // Add to comments array
-            comments.unshift(newComment);
-            
-            // Save to localStorage
-            localStorage.setItem('guestComments', JSON.stringify(comments));
-            
-            // Update display
-            displayComments();
-            updateStats();
-            
-            // Reset form
-            document.getElementById('commentForm').reset();
-            }
-            
-            function displayComments() {
-            const container = document.getElementById('commentsContainer');
-            container.innerHTML = comments.map(comment => `
-                <div class="pt-4 animate-fade-in">
-                <div class="font-medium">
-                    <span>${comment.name}</span>
-                    <span class="${comment.attendance === 'hadir' ? 'text-green-600' : 'text-red-600'}">
-                    (${comment.attendance.toUpperCase()})
-                    </span>
-                </div>
-                <p class="text-gray-600 mt-2">"${comment.message}"</p>
-                </div>
-            `).join('');
-            }
-            
-            function updateStats() {
-              const stats = comments.reduce((acc, comment) => {
-                if (comment.attendance === 'hadir') {
-                  acc.hadir++;
-                } else if (comment.attendance === 'tidak_hadir') {
-                  acc.tidakHadir++;
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
                 }
-                return acc;
-              }, { hadir: 0, tidakHadir: 0 });
-              
-              document.querySelector('.stats-hadir .text-4xl').textContent = String(stats.hadir).padStart(2, '0');
-              document.querySelector('.stats-tidakhadir .text-4xl').textContent = String(stats.tidakHadir).padStart(2, '0');
-              document.querySelector('.stats-total .text-4xl').textContent = String(stats.hadir + stats.tidakHadir).padStart(2, '0');
-            }
+                const db = firebase.firestore();
             
-            // Initial display
-            displayComments();
-            updateStats();
-          </script>
+                // Handle form submission
+                async function handleSubmit(event) {
+                    event.preventDefault();
+                    
+                    // Disable submit button
+                    const submitButton = event.target.querySelector('button[type="submit"]');
+                    submitButton.disabled = true;
+                    
+                    try {
+                        const name = document.getElementById('guestName').value;
+                        const message = document.getElementById('guestMessage').value;
+                        const attendance = document.querySelector('input[name="attendance"]:checked')?.value;
+                        
+                        if (!name || !message || !attendance) {
+                            throw new Error('Mohon lengkapi semua field');
+                        }
+            
+                        // Add comment to Firestore
+                        await db.collection('comments').add({
+                            name,
+                            message,
+                            attendance,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        
+                        // Reset form
+                        document.getElementById('commentForm').reset();
+                        alert('Terima kasih atas ucapannya!');
+                        
+                    } catch (error) {
+                        console.error("Error adding comment:", error);
+                        alert(error.message || "Gagal mengirim ucapan. Silakan coba lagi.");
+                    } finally {
+                        submitButton.disabled = false;
+                    }
+                }
+            
+                // Add form submit listener
+                const form = document.getElementById('commentForm');
+                if (form) {
+                    form.addEventListener('submit', handleSubmit);
+                }
+            
+                // Real-time listener for comments
+                db.collection('comments')
+                    .orderBy('timestamp', 'desc')
+                    .onSnapshot(
+                        (snapshot) => {
+                            const comments = [];
+                            stats = { hadir: 0, tidakHadir: 0, total: 0 };
+                            
+                            snapshot.forEach((doc) => {
+                                const comment = doc.data();
+                                comments.push(comment);
+                                
+                                if (comment.attendance === 'hadir') {
+                                    stats.hadir++;
+                                } else if (comment.attendance === 'tidak_hadir') {
+                                    stats.tidakHadir++;
+                                }
+                                stats.total++;
+                            });
+                            
+                            displayComments(comments);
+                            updateStats();
+                        },
+                        (error) => {
+                            console.error("Error fetching comments:", error);
+                        }
+                    );
+            
+            } catch (error) {
+                console.error("Firebase initialization error:", error);
+            }
+
+            // Add this function to update stats display
+function updateStats() {
+  document.querySelector('.stats-hadir .text-4xl').textContent = 
+    stats.hadir.toString().padStart(2, '0');
+  document.querySelector('.stats-tidakhadir .text-4xl').textContent = 
+    stats.tidakHadir.toString().padStart(2, '0'); 
+  document.querySelector('.stats-total .text-4xl').textContent = 
+    stats.total.toString().padStart(2, '0');
+}
+
+// Add this function after the updateStats function:
+
+function displayComments(comments) {
+  const container = document.getElementById('commentsContainer');
+  if (!container) return;
+
+  // Clear existing comments
+  container.innerHTML = '';
+
+  // Display each comment
+  comments.forEach(comment => {
+    const commentElement = document.createElement('div');
+    commentElement.className = 'p-4 border-t first:border-t-0';
+    
+    const attendanceClass = comment.attendance === 'hadir' ? 'text-green-600' : 'text-red-600';
+    const attendanceText = comment.attendance === 'hadir' ? 'Hadir' : 'Tidak Hadir';
+
+    commentElement.innerHTML = `
+      <div class="flex justify-between items-start mb-2">
+        <h3 class="font-bold text-lg text-gray-800">${comment.name}</h3>
+        <span class="${attendanceClass} text-sm font-medium">${attendanceText}</span>
+      </div>
+      <p class="text-gray-600">${comment.message}</p>
+      <span class="text-sm text-gray-400">
+        ${comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString('id-ID') : ''}
+      </span>
+    `;
+    
+    container.appendChild(commentElement);
+  });
+}
+
+// Make sure the stats object is declared before any usage
+let stats = { hadir: 0, tidakHadir: 0, total: 0 };
+
+db.collection('comments')
+  .orderBy('timestamp', 'desc')
+  .onSnapshot(
+    (snapshot) => {
+      const comments = [];
+      // Reset stats
+      stats = { hadir: 0, tidakHadir: 0, total: 0 };
+      
+      snapshot.forEach((doc) => {
+        const comment = doc.data();
+        comments.push(comment);
+        
+        // Update stats based on attendance
+        if (comment.attendance === 'hadir') {
+          stats.hadir++;
+        } else if (comment.attendance === 'tidak_hadir') {
+          stats.tidakHadir++;
+        }
+        stats.total++;
+      });
+      
+      displayComments(comments);
+      updateStats(); // Call updateStats after processing comments
+    },
+    (error) => {
+      console.error("Error fetching comments:", error);
+    }
+  );
+            </script>
+
   </section>
 
   <script>

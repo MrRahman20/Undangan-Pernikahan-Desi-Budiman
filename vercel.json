@@ -1,7 +1,6 @@
 {
-  "version": 2,
-  "routes": [
-    { "src": "/", "dest": "/landing.html" },
-    { "src": "/(.*)", "dest": "/$1" }
+  "redirects": [
+    { "source": "/", "destination": "/landing.html", "permanent": true }
   ]
 }
+

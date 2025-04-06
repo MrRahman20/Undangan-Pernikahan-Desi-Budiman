@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./vars.css">
+  <link rel="stylesheet" href="./style.css">
+  <script src='https://cdn.tailwindcss.com/3.2.0' ></script>
+  <script src="./tailwind.config.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Italianno&display=swap" rel="stylesheet">
+     
+  <!-- Open Graph Meta Tags -->
+      <meta property="og:title" content="The Wedding Of Desi & Ahmad Nasir" />
+      <meta property="og:description" content="Kami mengundang Bapak/ibu Saudara/i untuk menghadiri acara pernikahan kami pada Minggu, 13 April 2025" />
+      <meta property="og:image" content="https://res.cloudinary.com/dv8lzz2xl/image/upload/v1743922190/SjNqNHa_w6r61t.png" />
+      <meta property="og:url" content="http://127.0.0.1:5500/landing.html" />
+      <meta property="og:type" content="website" />
+      <meta property="og:site_name" content="Wedding Invitation" />
+  
+  <style>
+   a,
+   button,
+   input,
+   select,
+   h1,
+   h2,
+   h3,
+   h4,
+   h5,
+   * {
+       box-sizing: border-box;
+       margin: 0;
+       padding: 0;
+       border: none;
+       text-decoration: none;
+       background: none;
+   
+       -webkit-font-smoothing: antialiased;
+   }
+   
+   menu, ol, ul {
+       list-style-type: none;
+       margin: 0;
+       padding: 0;
+   }
+   @import url('https://fonts.googleapis.com/css2?family=Italianno&display=swap');
+    
+   .italiano-font {
+     font-family: 'Italianno', cursive;
+   }
+
+   /* ===== BASE FONT SIZES ===== */
+   .responsive-text {
+     font-size: 4rem !important; /* Main names font size */
+   }
+   
+   .responsive-subtitle {
+     font-size: 2rem !important; /* "The Wedding Of" font size */
+   }
+   
+   .responsive-date {
+     font-size: 1.8rem !important; /* Date font size */
+   }
+   
+   .responsive-message {
+     font-size: 1.5rem !important; /* Message font size */
+     line-height: 1.5;
+   }
+
+   /* ===== TABLET RESPONSIVE (1024px) ===== */
+   @media screen and (max-width: 1024px) {
+    .responsive-container {
+        padding-left: 32px !important;
+        padding-right: 32px !important;
+    }
+    .responsive-text {
+        font-size: 5rem !important; /* Ukuran font nama diperbesar untuk tablet */
+        line-height: 1.2 !important; /* Mengatur jarak antar baris */
+    }
+    .responsive-subtitle {
+        font-size: 2rem !important; /* Ukuran font "The Wedding Of" */
+    }
+    .responsive-date {
+        font-size: 1.2rem !important; /* Ukuran font tanggal */
+    }
+    .responsive-message {
+        font-size: 1rem !important; /* Ukuran font pesan */
+        padding: 0 20px !important;
+    }
+   }
+
+   /* ===== MOBILE RESPONSIVE (640px) ===== */
+   @media (max-width: 640px) {
+    .responsive-container {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+    .responsive-text {
+        font-size: 2rem !important;
+    }
+  }
+
+   /* ===== ANIMATIONS ===== */
+   @keyframes fadeIn {
+     from {
+       opacity: 0;
+       transform: translateY(20px);
+     }
+     to {
+       opacity: 1;
+       transform: translateY(0);
+     }
+   }
+
+   /* Animasi untuk nama pengantin */
+   @keyframes scaleIn {
+     from {
+       opacity: 0;
+       transform: scale(0.8);
+     }
+     to {
+       opacity: 1;
+       transform: scale(1);
+     }
+   }
+
+   /* Animasi untuk button */
+   @keyframes pulse {
+     0% {
+       transform: scale(1);
+       box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+     }
+     70% {
+       transform: scale(1.05);
+       box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+     }
+     100% {
+       transform: scale(1);
+       box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+     }
+   }
+
+   @keyframes slideUp {
+     from {
+       opacity: 0;
+       transform: translateY(30px);
+     }
+     to {
+       opacity: 1;
+       transform: translateY(0);
+     }
+   }
+
+   @keyframes buttonPulse {
+     0% {
+       transform: scale(1);
+       box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+     }
+     50% {
+       transform: scale(1.05);
+       box-shadow: 0 0 20px 10px rgba(255, 255, 255, 0.3);
+     }
+     100% {
+       transform: scale(1);
+       box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+     }
+   }
+
+   /* Animasi tambahan untuk teks */
+   @keyframes slideFromRight {
+     from {
+       opacity: 0;
+       transform: translateX(30px);
+     }
+     to {
+       opacity: 1;
+       transform: translateX(0);
+     }
+   }
+
+   @keyframes slideFromLeft {
+     from {
+       opacity: 0;
+       transform: translateX(-30px);
+     }
+     to {
+       opacity: 1;
+       transform: translateX(0);
+     }
+   }
+
+   .animate-scale {
+     opacity: 0;
+     animation: scaleIn 1s ease-out forwards;
+   }
+
+   .animate-pulse {
+     animation: pulse 2s infinite;
+   }
+
+   .animate-slide-right {
+     opacity: 0;
+     animation: slideFromRight 1s ease-out forwards;
+   }
+
+   .animate-slide-left {
+     opacity: 0;
+     animation: slideFromLeft 1s ease-out forwards;
+   }
+
+   .animate-slide-up {
+     opacity: 0;
+     animation: slideUp 1s ease-out forwards;
+   }
+
+   .animate-button-pulse {
+     animation: buttonPulse 2s infinite;
+   }
+
+   /* Animasi untuk button */
+   @keyframes buttonAnimation {
+     0% {
+       opacity: 0;
+       transform: translateY(30px);
+     }
+     100% {
+       opacity: 1;
+       transform: translateY(0);
+     }
+   }
+
+   @keyframes buttonGlow {
+     0% {
+       box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+     }
+     70% {
+       box-shadow: 0 0 20px 10px rgba(255, 255, 255, 0.3);
+     }
+     100% {
+       box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+     }
+   }
+
+   .animate-button {
+     opacity: 0;
+     animation: 
+       buttonAnimation 1s ease-out forwards,
+       buttonGlow 2s infinite 1s;
+   }
+
+   /* ===== ANIMATION DELAYS ===== */
+   .delay-300 { animation-delay: 300ms; } /* First element delay */
+   .delay-600 { animation-delay: 600ms; } /* Names delay */
+   .delay-900 { animation-delay: 900ms; } /* Date & message delay */
+   .delay-1200 { animation-delay: 1200ms; } /* Button delay */
+
+   /* ===== ZOOM SETTINGS (300%+) ===== */
+   @media (min-resolution: 300%) {
+     .responsive-container {
+       padding-left: 16px !important;
+       padding-right: 16px !important;
+       height: auto !important;
+       min-height: 100vh;
+     }
+     .responsive-text {
+       font-size: 1.5rem !important;
+       line-height: 1.2 !important;
+       width: 100% !important;
+       max-width: 300px !important;
+       margin: 0 auto;
+     }
+     .responsive-subtitle {
+       font-size: 1rem !important;
+       width: 100% !important;
+       max-width: 300px !important;
+       margin: 0 auto;
+     }
+     .responsive-date {
+       font-size: 0.9rem !important;
+       width: 100% !important;
+       max-width: 300px !important;
+       margin: 0 auto;
+     }
+     .responsive-message {
+       font-size: 0.8rem !important;
+       width: 100% !important;
+       max-width: 300px !important;
+       margin: 0 auto;
+       padding: 0 10px !important;
+     }
+   }
+
+   /* Ensure content stays centered and readable at high zoom levels */
+   .zoom-safe {
+     position: relative !important;
+     transform: none !important;
+     left: auto !important;
+     top: auto !important;
+     margin: 0 auto !important;
+   }
+
+  </style>
+  <title>Document</title>
+</head>
+<body>
+  <div class="bg-[#125a43] responsive-container flex flex-col items-center justify-center gap-4 min-h-screen relative overflow-hidden">
+    <img class="shrink-0 w-full h-full absolute left-0 top-0 object-cover" src="landing.png" />
+    
+    <div class="relative z-10 flex flex-col items-center gap-4 py-8">
+      <div class="text-[#ffffff] text-center responsive-subtitle font-['Italianno-Regular',_sans-serif] animate-slide-left delay-300 zoom-safe">
+        The Wedding Of
+      </div>
+      
+      <div class="text-[#ffffff] text-center italiano-font responsive-text leading-[1.2] animate-scale delay-600 zoom-safe">
+        Desi Susilawati<br />&amp;<br />Ahmad Nasir Budiman<br />(Ang Budi)
+      </div>
+      
+      <div class="text-[#ffffff] text-center responsive-date animate-slide-right delay-900 zoom-safe">
+        Minggu, 13 April 2025
+      </div>
+      
+      <div class="text-[#ffffff] text-center responsive-message animate-slide-left delay-900 zoom-safe">
+        Tanpa mengurangi Hormat, kami mengundang<br />
+        Bapak/ibu Saudara/i untuk hadir dalam Acara Pernikahan kami
+      </div>
+      
+      <button onclick="window.location.href='./main.html'" class="bg-[#ffffff] rounded-lg px-8 py-3 mt-4 animate-button delay-1200 zoom-safe hover:scale-105 transition-transform duration-300">
+        <span class="text-[#2f1c07] font-bold">Buka Undangan</span>
+      </button>
+    </div>
+  </div>
+</body>
+</html>

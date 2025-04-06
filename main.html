@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=0.9, minimum-scale=0.9">
+    <script src='https://cdn.tailwindcss.com/3.2.0'></script>
+    <link href="https://fonts.googleapis.com/css2?family=Italianno&display=swap" rel="stylesheet">
+    <style>
+        /* Reset Styles */
+        a, button, input, select, h1, h2, h3, h4, h5, * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            border: none;
+            text-decoration: none;
+            background: none;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        menu, ol, ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Background Aurora */
+        .bg-aurora {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background-image: url('aurora.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .animate-fadeIn { animation: fadeIn 1s ease-out; }
+        .animate-slideUp { animation: slideUp 1s ease-out; }
+        .animate-scaleIn { animation: scaleIn 0.8s ease-out; }
+        .animate-pulse { animation: pulse 2s infinite; }
+
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+        .delay-500 { animation-delay: 500ms; }
+
+        /* Scrollbar Styles */
+        .comments-container {
+            max-height: 400px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #8bcadb #ffffff;
+        }
+
+        .comments-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .comments-container::-webkit-scrollbar-track {
+            background: #ffffff;
+            border-radius: 4px;
+        }
+
+        .comments-container::-webkit-scrollbar-thumb {
+            background-color: #8bcadb;
+            border-radius: 4px;
+        }
+
+        /* Section Styles */
+        .section {
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-inner {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Navigation */
+        .nav-dots {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            margin: 8px 0;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .nav-dot.active {
+            background: #fff;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+            /* Music control button */
+    .music-control {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(5px);
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .music-control:hover {
+      transform: scale(1.1);
+    }
+
+    .music-control.playing .pause-icon {
+      display: block;
+    }
+
+    .music-control.playing .play-icon {
+      display: none;
+    }
+
+    .music-control:not(.playing) .pause-icon {
+      display: none;
+    }
+
+    .music-control:not(.playing) .play-icon {
+      display: block;
+    }
+
+    </style>
+      <script>
+            let isPlaying = true;
+            
+            function toggleMusic() {
+              const bgMusic = document.getElementById('bgMusic');
+              const musicControl = document.querySelector('.music-control');
+              
+              if (isPlaying) {
+                bgMusic.pause();
+                musicControl.classList.remove('playing');
+              } else {
+                bgMusic.play();
+                musicControl.classList.add('playing');
+              }
+              
+              isPlaying = !isPlaying;
+            }
+
+            // Auto play music on page load
+            window.addEventListener('load', function() {
+              const bgMusic = document.getElementById('bgMusic');
+              bgMusic.play().catch(function(error) {
+                console.log("Audio autoplay failed:", error);
+                isPlaying = false;
+                document.querySelector('.music-control').classList.remove('playing');
+              });
+            });
+        </script>
+    <title>Undangan Pernikahan</title>
+</head>
+<body class="bg-[#125a43]">
+  <div class="bg-aurora"></div>
+      <!-- Audio Element -->
+      <audio id="bgMusic" loop autoplay>
+        <source src="lagu.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+        </audio>
+    
+        <!-- Music Control Button -->
+        <div class="music-control playing" onclick="toggleMusic()">
+        <svg class="play-icon w-6 h-6" fill="white" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+        <svg class="pause-icon w-6 h-6" fill="white" viewBox="0 0 24 24">
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+        </svg>
+        </div>
+    
+
+  <!-- Navigation Dots -->
+  <div class="nav-dots">
+    <div class="nav-dot active" data-section="section1"></div>
+    <div class="nav-dot" data-section="section2"></div>
+    <div class="nav-dot" data-section="section3"></div>
+    <div class="nav-dot" data-section="section4"></div>
+    <div class="nav-dot" data-section="section5"></div>
+  </div>
+
+  <!-- Section 1: Opening -->
+  <section id="section1" class="section">
+<style>
+   a,
+   button,
+   input,
+   select,
+   h1,
+   h2,
+   h3,
+   h4,
+   h5,
+   * {
+       box-sizing: border-box;
+       margin: 0;
+       padding: 0;
+       border: none;
+       text-decoration: none;
+       background: none;
+   
+       -webkit-font-smoothing: antialiased;
+   }
+   
+   menu, ol, ul {
+       list-style-type: none;
+       margin: 0;
+       padding: 0;
+   }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes scaleIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    .animate-fadeIn { animation: fadeIn 1s ease-out; }
+    .animate-slideUp { animation: slideUp 1s ease-out; }
+    .animate-scaleIn { animation: scaleIn 0.8s ease-out; }
+    .animate-pulse { animation: pulse 2s infinite; }
+  </style>
+  <title>Undangan Pernikahan</title>
+</head>
+<body>
+  <div class="min-h-screen w-full p-4 md:p-6 flex flex-col items-center justify-center relative overflow-hidden">
+      
+    <!-- Main Container -->
+    <div class="bg-[rgba(27,116,88,0.70)] rounded-[32px] w-[95%] md:w-[90%] lg:w-[1618px] min-h-[80vh] relative z-10 px-4 py-8 md:px-8 md:py-12 animate-fadeIn">
+      
+      <!-- Corner Decorations -->
+      <img class="w-[150px] md:w-[200px] lg:w-[319px] absolute -left-2 -top-2 object-contain" src="image-00.png" />
+      <img class="w-[150px] md:w-[200px] lg:w-[319px] absolute -right-2 -top-2 transform scale-x-[-1] object-contain" src="image-10.png" />
+      <img class="w-[150px] md:w-[200px] lg:w-[319px] absolute -left-2 -bottom-2 transform -rotate-90 object-contain" src="image0.png" />
+      <img class="w-[150px] md:w-[200px] lg:w-[319px] absolute -right-2 -bottom-2 transform rotate-180 object-contain" src="image-20.png" />
+
+      <!-- Wedding Title -->
+      <h1 class="text-[#eda623] text-center font-['Italianno'] text-6xl sm:text-7xl md:text-8xl lg:text-[160px] mb-4 mt-8 sm:mt-20 leading-[0.9] animate-slideUp">
+        Wedding Invitation
+      </h1>
+
+      <!-- Couple Names -->
+      <div class="text-white text-center font-['Italianno'] text-5xl sm:text-7xl md:text-8xl lg:text-[120px] mb-6 sm:mb-16 leading-[1.1] animate-slideUp delay-200">
+        Desi Susilawati
+        <br />
+        <span class="text-4xl sm:text-6xl md:text-8xl block my-1 sm:my-4">dan</span>
+        Ahmad Nasir Budiman
+        <br class="block sm:hidden" />
+        <span class="text-3xl sm:text-6xl md:text-8xl">(Ang Budi)</span>
+      </div>
+
+      <!-- Date -->
+      <div class="text-white text-center font-['Poppins-Regular',_sans-serif] text-2xl sm:text-3xl md:text-4xl mb-12 sm:mb-16 animate-slideUp delay-300">
+        Minggu, 13 April 2025
+      </div>
+
+      <!-- Photo -->
+      <div class="w-full max-w-[619px] mx-auto mb-8">
+        <img
+          class="rounded-[43px] w-full h-auto object-cover"
+          src="whats-app-image-2025-04-04-at-14-18-49-10.png"
+        />
+      </div>
+
+      <!-- Decorative Elements -->
+      <div class="flex items-center justify-center gap-4 mb-8">
+        <div class="bg-[#faab2f] h-[3px] flex-1 max-w-[538px]"></div>
+        <img class="w-[37px] h-[37px] animate-pulse" src="rings-10.png" />
+        <div class="bg-[#faab2f] h-[3px] flex-1 max-w-[538px]"></div>
+      </div>
+
+      <!-- Quote -->
+      <div class="text-white text-center font-['Poppins-Regular',_sans-serif] text-base md:text-xl leading-relaxed max-w-[994px] mx-auto">
+        "Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan
+        pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan
+        merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan
+        sayang. Sungguh, pada yang demikian itu benar-benar terdapat tanda-tanda
+        (kebesaran Allah) bagi kaum yang berpikir.."
+        <br />
+        <br />
+        (QS. Ar-Rum : 21)
+      </div>
+    </div>
+  </div>
+</body>
+  </section>
+
+  <!-- Section 2: About -->
+  <section id="section2" class="section">
+    <style>
+        a,
+        button,
+        input,
+        select,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            border: none;
+            text-decoration: none;
+            background: none;
+        
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        menu, ol, ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        @media (max-width: 768px) {
+            .couple-container {
+                flex-direction: column;
+            }
+        }
+     
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+     
+        @keyframes slideIn {
+            from { 
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+     
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+     
+        .animate-fade {
+            animation: fadeIn 1s ease-out;
+        }
+     
+        .animate-slide {
+            animation: slideIn 1s ease-out;
+        }
+     
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+       </style>
+       <title>Undangan Pernikahan</title>
+     </head>
+     <body>
+       <div class="min-h-screen p-4 md:p-8 flex flex-col items-center justify-center relative overflow-hidden">
+
+         
+        <!-- Main Container -->
+        <div class="bg-[rgba(27,116,88,0.70)] rounded-[32px] w-[95%] md:w-[90%] lg:w-[1618px] min-h-[80vh] relative z-10 px-4 py-8 md:px-8 md:py-12 animate-fadeIn">
+      
+        <!-- Corner Decorations -->
+        <img class="w-[150px] md:w-[200px] lg:w-[319px] absolute -left-2 -top-2 object-contain" src="image-00.png" />
+        <img class="w-[150px] md:w-[200px] lg:w-[319px] absolute -right-2 -top-2 transform scale-x-[-1] object-contain" src="image-10.png" />
+        <img class="w-[150px] md:w-[200px] lg:w-[319px] absolute -left-2 -bottom-2 transform -rotate-90 object-contain" src="image0.png" />
+        <img class="w-[150px] md:w-[200px] lg:w-[319px] absolute -right-2 -bottom-2 transform rotate-180 object-contain" src="image-20.png" />
+             
+        <div class="text-white text-center text-xl mb-12 animate-fade">
+                 Assalamualikum<br />
+                 Warahmatullahi Wabarakatuh<br /><br />
+                 Dengan Memohon rahmat dan Ridho Allah SWT<br />
+                 Kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk Menghadiri Acara Pernikahan Kami :
+             </div>
+     
+             <div class="couple-container flex flex-col md:flex-row justify-around items-center gap-8">
+                 <!-- Bride Section -->
+                 <div class="bg-[#1b7458] rounded-[32px] p-6 w-full md:w-[469px] animate-slide" style="animation-delay: 0.3s">
+                     <img class="w-[270px] h-[271px] mx-auto rounded-full object-cover" src="pengantin-wanita-10.png" alt="Bride" />
+                     <h2 class="text-center text-5xl my-4 bg-gradient-to-b from-[#FFDC83] to-[#E4AA11] bg-clip-text text-transparent font-['Italianno-Regular']">
+                         Desi Susilawati<br/>
+                         <span class="text-3xl">(Desi)</span>
+                     </h2>
+                     <p class="text-white text-center text-xl">
+                         Putri Kedua dari Alm Bapak Solihin<br />
+                         dan Ibu Yoyoh Rokoyah
+                     </p>
+                     <a href="https://instagram.com/Deciii_07" 
+                        target="_blank"
+                        class="bg-[#3ceee8] rounded-[24.5px] py-3 px-6 flex items-center justify-center gap-2 w-[185px] mx-auto mt-4 hover:opacity-80 transition-opacity">
+                         <img class="w-5 h-5" src="instagram-10.png" alt="Instagram" />
+                         <span class="text-black">deciii_07</span>
+                     </a>
+                 </div>
+     
+                 <div class="text-9xl font-['Italianno-Regular'] bg-gradient-to-b from-[#FFDC83] to-[#E4AA11] bg-clip-text text-transparent animate-pulse">
+                     &amp;
+                 </div>
+     
+                 <!-- Groom Section -->
+                 <div class="bg-[#1b7458] rounded-[32px] p-6 w-full md:w-[469px] animate-slide" style="animation-delay: 0.6s">
+                     <img class="w-[270px] h-[271px] mx-auto rounded-full object-cover" src="pengantin-pria-10.png" alt="Groom" />
+                     <h2 class="text-center text-5xl my-4 bg-gradient-to-b from-[#FFDC83] to-[#E4AA11] bg-clip-text text-transparent font-['Italianno-Regular']">
+                         Ahmad Nasir Budiman<br/>
+                         <span class="text-3xl">(Ang Budi)</span>
+                     </h2>
+                     <p class="text-white text-center text-xl">
+                         Putra Kelima dari Alm Bapak M.y Bachtiar<br />
+                         dan Almh Ibu Sarah
+                     </p>
+                     <a href="https://instagram.com/Angbudii" 
+                        target="_blank"
+                        class="bg-[#3ceee8] rounded-[24.5px] py-3 px-6 flex items-center justify-center gap-2 w-[185px] mx-auto mt-4 hover:opacity-80 transition-opacity">
+                         <img class="w-5 h-5" src="instagram-20.png" alt="Instagram" />
+                         <span class="text-black">angbudii</span>
+                     </a>
+                 </div>
+             </div>
+         </div>
+       </div>
+     </body>
+  </section>
+
+  <!-- Section 3: Location -->
+  <section id="section3" class="section">
+    <style>
+        a,
+        button,
+        input,
+        select,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            border: none;
+            text-decoration: none;
+            background: none;
+        
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        menu, ol, ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+     
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .text-responsive {
+                font-size: clamp(1rem, 4vw, 2rem);
+            }
+            .heading-responsive {
+                font-size: clamp(4rem, 12vw, 6rem);
+                font-family: 'Italianno', cursive !important;
+                margin-bottom: 1.5rem;
+                line-height: 1;
+            }
+        }
+       
+         .heading-responsive {
+           font-family: 'Italianno', cursive;
+           line-height: 1.1;
+         }
+         
+         @media (min-width: 768px) {
+           .heading-responsive {
+             font-size: clamp(5rem, 8vw, 7rem);
+             margin-bottom: 2rem;
+           }
+         }
+     
+         /* Add animation keyframes */
+         @keyframes fadeInUp {
+           from {
+             opacity: 0;
+             transform: translateY(20px);
+           }
+           to {
+             opacity: 1;
+             transform: translateY(0);
+           }
+         }
+     
+         @keyframes fadeIn {
+           from { opacity: 0; }
+           to { opacity: 1; }
+         }
+     
+         /* Animation classes */
+         .animate-fadeInUp {
+           animation: fadeInUp 0.8s ease-out forwards;
+         }
+     
+         .animate-fadeIn {
+           animation: fadeIn 1s ease-out forwards;
+         }
+     
+         .delay-100 { animation-delay: 100ms; }
+         .delay-200 { animation-delay: 200ms; }
+         .delay-300 { animation-delay: 300ms; }
+         .delay-400 { animation-delay: 400ms; }
+         .delay-500 { animation-delay: 500ms; }
+       </style>
+       <title>Undangan Pernikahan</title>
+     </head>
+     <body>
+       <div class="min-h-screen  p-4 md:p-2.5 flex flex-col md:flex-row gap-4 md:gap-2.5 items-center justify-center relative overflow-hidden">
+         <img class="w-full md:w-[1114.9px] h-auto absolute left-0 bottom-0 md:left-[-4.45px] md:top-[1113.94px] opacity-30"
+           style="transform-origin: center; transform: rotate(-89.738deg) scale(1, 1); mix-blend-mode: luminosity;"
+           src="_654390-cd-9-d-774-bee-2854100-cebde-0335-20.png" />
+         
+         <div class="container mx-auto max-w-7xl relative z-10">
+        <!-- Corner Decorations -->
+        <img class="w-[150px] md:w-[200px] lg:w-[319px] absolute -left-2 -top-2 object-contain z-20" src="image-00.png" />
+        <img class="w-[150px] md:w-[200px] lg:w-[319px] absolute -right-2 -top-2 transform scale-x-[-1] object-contain z-20" src="image-10.png" />
+        <img class="w-[150px] md:w-[200px] lg:w-[319px] absolute -left-2 -bottom-2 transform -rotate-90 object-contain z-20" src="image0.png" />
+        <img class="w-[150px] md:w-[200px] lg:w-[319px] absolute -right-2 -bottom-2 transform rotate-180 object-contain z-20" src="image-20.png" />
+           <div class="bg-[rgba(30,109,84,0.70)] rounded-[20px] p-6 md:p-8 mb-6 animate-fadeIn">
+             <h1 class="text-white text-center text-2xl md:text-3xl mb-6 animate-fadeInUp delay-100">
+               Insya Allah akan dilaksanakan pada :
+             </h1>
+             
+             <h2 class="heading-responsive text-center mb-6 md:mb-10 animate-fadeInUp delay-200"
+               style="background: linear-gradient(180deg, rgba(255,220,131,1) 0%, rgba(228,170,17,1) 100%);
+               -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+               Minggu
+             </h2>
+     
+             <div class="text-white text-center text-2xl md:text-3xl mb-6 animate-fadeInUp delay-300">
+               13 April 2025 | Pukul : 09.00 WIB - Selesai
+             </div>
+     
+             <div class="bg-[rgba(30,109,84,0.70)] rounded-[20px] p-6 md:p-8 mb-6 animate-fadeIn delay-400">
+               <h2 class="heading-responsive text-center mb-6 md:mb-10"
+                 style="background: linear-gradient(180deg, rgba(255,220,131,1) 0%, rgba(228,170,17,1) 100%);
+                 -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                 Resepsi Nikah
+               </h2>
+     
+               <div class="text-white text-center text-2xl md:text-3xl mb-6">
+                 13 April 2025
+                 <br />
+                 Pukul : 10.00 WIB - Selesai
+               </div>
+     
+               <div class="text-white text-center text-2xl md:text-3xl mb-6 w-full md:w-[1070px]">
+                 Bertempat dikediaman Mempelai Wanita
+                 <br />
+                 Kp. Neglasari RT. 05 RW. 01 Desa Pagelaran Kec. Ciomas Kab. Bogor (Perum
+                 Mutiara Residence sebelum Perum Alam Tirta)
+               </div>
+             </div>
+     
+             <div class="text-center font-['Italianno-Regular'] text-5xl leading-none font-normal mb-6 animate-fadeInUp delay-500"
+               style="background: linear-gradient(180deg, rgba(255,220,131,1) 0%, rgba(228,170,17,1) 100%);
+               -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+               Countdown Time
+             </div>
+     
+             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 animate-fadeInUp delay-500">
+               <div class="text-center">
+                 <div class="text-responsive text-[64px] text-white" id="days">00</div>
+                 <div class="text-base text-white">Days</div>
+               </div>
+               <div class="text-center">
+                 <div class="text-responsive text-[64px] text-white" id="hours">00</div>
+                 <div class="text-base text-white">Hours</div>
+               </div>
+               <div class="text-center">
+                 <div class="text-responsive text-[64px] text-white" id="minutes">00</div>
+                 <div class="text-base text-white">Minutes</div>
+               </div>
+               <div class="text-center">
+                 <div class="text-responsive text-[64px] text-white" id="seconds">00</div>
+                 <div class="text-base text-white">Seconds</div>
+               </div>
+             </div>
+     
+             <div class="flex flex-col md:flex-row gap-4 justify-center mt-4 animate-fadeInUp delay-500">
+               <a href="https://maps.app.goo.gl/tEcKRn8ri44xoF6n6" 
+                  target="_blank"
+                  class="bg-white rounded-[10px] px-8 py-4 text-[#1c1003] text-xl font-medium hover:bg-opacity-90 transition-all text-center">
+                 Lihat Lokasi
+               </a>
+               <a href="#" 
+                  id="saveDate"
+                  class="bg-white rounded-[10px] px-8 py-4 text-[#1c1003] text-xl font-medium hover:bg-opacity-90 transition-all text-center">
+                 Save The Date
+               </a>
+             </div>
+           </div>
+         </div>
+       </div>
+     
+       <script>
+         // Add countdown functionality
+         function updateCountdown() {
+           const targetDate = new Date('2025-04-13T09:00:00');
+           const now = new Date();
+           const diff = targetDate - now;
+     
+           const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+           const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+           const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+           const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+     
+           document.getElementById('days').textContent = days.toString().padStart(2, '0');
+           document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+           document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+           document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+         }
+     
+         setInterval(updateCountdown, 1000);
+         updateCountdown();
+     
+         // Add calendar functionality
+         document.getElementById('saveDate').addEventListener('click', function(e) {
+           e.preventDefault();
+           
+           const event = {
+             title: 'Resepsi Pernikahan',
+             description: 'Resepsi Pernikahan\nBertempat di: Kp. Neglasari RT. 05 RW. 01 Desa Pagelaran Kec. Ciomas Kab. Bogor',
+             location: 'Kp. Neglasari RT. 05 RW. 01 Desa Pagelaran Kec. Ciomas Kab. Bogor',
+             start: '20250413T090000',
+             end: '20250413T170000'
+           };
+     
+           const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}&dates=${event.start}/${event.end}`;
+           
+           window.open(calendarUrl, '_blank');
+         });
+       </script>
+     </body>
+  </section>
+
+  <!-- Section 4: Gift -->
+  <section id="section4" class="section">
+    <style>
+        a,
+        button,
+        input,
+        select,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            border: none;
+            text-decoration: none;
+            background: none;
+        
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        menu, ol, ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        @media (max-width: 768px) {
+            .responsive-container {
+                padding: 1rem;
+            }
+            .gallery-image {
+                width: 100% !important;
+                height: auto !important;
+                position: relative !important;
+                left: auto !important;
+                top: auto !important;
+                margin-bottom: 1rem;
+            }
+        }
+     
+    
+         .content-wrapper {
+           position: relative;
+           z-index: 1;
+         }
+     
+         .font-italianno {
+           font-family: 'Italianno', cursive;
+           font-size: 84px;
+           line-height: 1.4;
+           padding: 0.5rem 0;
+           margin: 0.5rem 0;
+         }
+     
+         @media (max-width: 768px) {
+           .font-italianno {
+             font-size: 64px;
+             line-height: 1.2;
+           }
+         }
+     
+         /* Animation Keyframes */
+         @keyframes fadeIn {
+           from { opacity: 0; transform: translateY(20px); }
+           to { opacity: 1; transform: translateY(0); }
+         }
+     
+         @keyframes slideUp {
+           from { opacity: 0; transform: translateY(30px); }
+           to { opacity: 1; transform: translateY(0); }
+         }
+     
+         @keyframes scaleIn {
+           from { opacity: 0; transform: scale(0.9); }
+           to { opacity: 1; transform: scale(1); }
+         }
+     
+         /* Animation Classes */
+         .animate-fade {
+           animation: fadeIn 1s ease-out forwards;
+         }
+     
+         .animate-scale {
+           animation: scaleIn 1s ease-out forwards;
+         }
+     
+         .animate-up {
+           animation: slideUp 1s ease-out forwards;
+         }
+     
+         /* Animation Delays */
+         .delay-300 { animation-delay: 300ms; }
+         .delay-600 { animation-delay: 600ms; }
+         .delay-900 { animation-delay: 900ms; }
+       </style>
+       <title>Undangan Pernikahan</title>
+     </head>
+     <body>
+       <div class="content-wrapper min-h-screen p-4 md:p-8">
+         <div class="bg-[rgba(30,109,84,0.70)] backdrop-blur-sm rounded-[20px] w-full max-w-7xl mx-auto p-4 md:p-8 animate-fade">
+           <!-- Gift Section -->
+           <div class="bg-[rgba(32,112,86,0.71)] rounded-[14px] border-2 border-solid w-full mb-8 p-6 md:p-8 animate-scale delay-300"
+             style="border-image: linear-gradient(180deg, rgba(235,212,37,1) 0%, rgba(226,169,10,1) 100%); border-image-slice: 1;">
+             
+             <h1 class="text-center font-italianno md:text-[120px] mb-8 animate-up delay-300"
+               style="background: linear-gradient(180deg, rgba(255,220,131,1) 0%, rgba(228,170,17,1) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+               Wedding Gift
+             </h1>
+     
+             <p class="text-white text-center font-['InriaSerif-Regular',_sans-serif] text-xl md:text-3xl mb-8 animate-fade delay-600">
+               Doa Restu anda merupakan Karunia yang sangat berarti bagi kami, dan jika memberi adalah ungkapan tanda kasih anda, anda dapat memberi kado secara cashless
+             </p>
+     
+             <div class="flex flex-col md:flex-row justify-around gap-8 mb-8 animate-up delay-900">
+               <!-- BCA Section -->
+               <div class="text-center">
+                 <div class="bg-white rounded-[13px] p-4 mb-4 mx-auto w-32 h-[109px] flex items-center justify-center">
+                   <img class="w-24 h-8" src="download-9-10.png" alt="BCA">
+                 </div>
+                 <p class="text-white text-xl md:text-3xl">
+                   BANK BCA<br>
+                   8721283852<br>
+                   <span class="text-lg md:text-2xl">A.N ACHMAD NASIR BUDIMAN</span>
+                 </p>
+               </div>
+     
+               <!-- DANA Section -->
+               <div class="text-center">
+                 <div class="bg-white rounded-[13px] p-4 mb-4 mx-auto w-32 h-[109px] flex items-center justify-center">
+                   <img class="w-24 h-24" src="download-10-10.png" alt="DANA">
+                 </div>
+                 <p class="text-white text-xl md:text-3xl">
+                   DANA<br>
+                   08816830790<br>
+                   <span class="text-lg md:text-2xl">A.N DESI SUSILAWATI</span>
+                 </p>
+               </div>
+             </div>
+           </div>
+     
+           <!-- Gallery Section -->
+           <h2 class="text-center font-italianno md:text-[120px] mb-8 animate-up delay-300"
+             style="background: linear-gradient(180deg, rgba(255,220,131,1) 0%, rgba(228,170,17,1) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+             Our Gallery
+           </h2>
+     
+           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+             <img class="w-full rounded-[36px] object-cover aspect-[9/16] animate-scale delay-600" src="whats-app-image-2025-04-04-at-14-18-32-2-20.png" alt="Gallery 1">
+             <div class="md:col-span-1 animate-scale delay-900">
+               <img class="w-full rounded-[36px] object-cover aspect-video mb-4" src="whats-app-image-2025-04-04-at-14-18-49-20.png" alt="Gallery 2">
+               <img class="w-full rounded-[36px] object-cover aspect-video" src="whats-app-image-2025-04-04-at-14-18-32-1-10.png" alt="Gallery 3">
+             </div>
+             <img class="w-full rounded-[36px] object-cover aspect-[9/16] animate-scale delay-600" src="whats-app-image-2025-04-04-at-14-18-49-1-10.png" alt="Gallery 4">
+           </div>
+         </div>
+       </div>
+     </body>
+  </section>
+
+  <!-- Section 5: Comments -->
+  <section id="section5" class="section">
+    <body>
+        <div class="min-h-screen p-4 md:p-8 relative overflow-hidden">
+     
+          <!-- Main Container -->
+          <div class="container mx-auto max-w-7xl relative z-10">
+              <!-- Header -->
+              <h1 class="text-2xl md:text-3xl text-center mb-8 font-['InriaSerif-Regular'] bg-gradient-to-b from-[#FFDC83] to-[#E4AA11] bg-clip-text text-transparent animate-slide-down">
+                  Konfirmasi Kehadiran &amp; Ucapan Selamat
+              </h1>
+      
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="stats-hadir bg-[rgba(27,116,88,0.70)] border border-white/20 rounded-lg p-4 text-center text-white animate-fadeIn delay-100">
+          <div class="text-4xl md:text-5xl mb-2">00</div>
+          <div class="text-lg md:text-xl">Hadir</div>
+        </div>
+        <div class="stats-tidakhadir bg-[rgba(27,116,88,0.70)] border border-white/20 rounded-lg p-4 text-center text-white animate-fadeIn delay-200">
+          <div class="text-4xl md:text-5xl mb-2">00</div>
+          <div class="text-lg md:text-xl">Tidak Hadir</div>
+        </div>
+        <div class="stats-total bg-[rgba(27,116,88,0.70)] border border-white/20 rounded-lg p-4 text-center text-white animate-fadeIn delay-300">
+          <div class="text-4xl md:text-5xl mb-2">00</div>
+          <div class="text-lg md:text-xl">Total</div>
+        </div>
+      </div>
+      
+              <!-- Form Section -->
+              <div class="bg-white/60 rounded-xl p-6 space-y-4 animate-scale-in delay-400">
+                  <form id="commentForm" onsubmit="handleSubmit(event)">
+                      <input type="text" placeholder="NAMA" id="guestName" required class="w-full rounded-xl p-3 bg-white mb-4" />
+                      <textarea placeholder="UCAPAN" id="guestMessage" required class="w-full rounded-xl p-3 bg-white h-32 mb-4"></textarea>
+                      
+                      <div class="flex flex-wrap gap-4 mb-4">
+                          <label class="flex items-center gap-2 bg-white px-6 py-3 rounded-xl shadow cursor-pointer">
+                              <div class="relative">
+                                  <input type="radio" name="attendance" value="hadir" class="sr-only peer">
+                                  <div class="w-6 h-6 border border-black rounded bg-[#4dcf65] flex items-center justify-center peer-checked:bg-[#4dcf65] peer-checked:[&>img]:opacity-100">
+                                      <img src="union0.svg" class="w-4 h-4 opacity-0 transition-opacity" alt="check" />
+                                  </div>
+                              </div>
+                              <span class="select-none">HADIR</span>
+                          </label>
+                          <label class="flex items-center gap-2 bg-white px-6 py-3 rounded-xl shadow cursor-pointer">
+                              <div class="relative">
+                                  <input type="radio" name="attendance" value="tidak_hadir" class="sr-only peer">
+                                  <div class="w-6 h-6 border border-black rounded bg-[#ed4217] flex items-center justify-center peer-checked:bg-[#ed4217] peer-checked:[&>img]:opacity-100">
+                                      <img src="union1.svg" class="w-4 h-4 opacity-0 transition-opacity" alt="cross" />
+                                  </div>
+                              </div>
+                              <span class="select-none">TIDAK HADIR</span>
+                          </label>
+                      </div>
+      
+                      <button type="submit" class="bg-[#8bcadb] px-8 py-3 rounded-xl shadow text-white hover:bg-[#7ab9c9] transition-colors">
+                          KIRIM
+                      </button>
+                  </form>
+              </div>
+              
+              <!-- Comments Section -->
+              <div class="bg-white/60 rounded-xl p-6 mt-8 animate-scale-in delay-500">
+                  <div id="commentsContainer" class="comments-container space-y-6 divide-y">
+                      <!-- Comments will be inserted here dynamically -->
+                  </div>
+              </div>
+          </div>
+      
+          <!-- Footer -->
+          <footer class="bg-[#288d6d] text-white text-center py-4 mt-8 animate-fade-in delay-500">
+              <p class="text-lg md:text-xl">© Copyright 2025 Ismaya.tech All Right Reserved</p>
+          </footer>
+          </div>
+          <script>
+            // Initialize comments array from localStorage or empty array
+            let comments = JSON.parse(localStorage.getItem('guestComments')) || [];
+            
+            function handleSubmit(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('guestName').value;
+            const message = document.getElementById('guestMessage').value;
+            const attendance = document.querySelector('input[name="attendance"]:checked').value;
+            
+            // Create new comment object
+            const newComment = {
+                name,
+                message,
+                attendance,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Add to comments array
+            comments.unshift(newComment);
+            
+            // Save to localStorage
+            localStorage.setItem('guestComments', JSON.stringify(comments));
+            
+            // Update display
+            displayComments();
+            updateStats();
+            
+            // Reset form
+            document.getElementById('commentForm').reset();
+            }
+            
+            function displayComments() {
+            const container = document.getElementById('commentsContainer');
+            container.innerHTML = comments.map(comment => `
+                <div class="pt-4 animate-fade-in">
+                <div class="font-medium">
+                    <span>${comment.name}</span>
+                    <span class="${comment.attendance === 'hadir' ? 'text-green-600' : 'text-red-600'}">
+                    (${comment.attendance.toUpperCase()})
+                    </span>
+                </div>
+                <p class="text-gray-600 mt-2">"${comment.message}"</p>
+                </div>
+            `).join('');
+            }
+            
+            function updateStats() {
+              const stats = comments.reduce((acc, comment) => {
+                if (comment.attendance === 'hadir') {
+                  acc.hadir++;
+                } else if (comment.attendance === 'tidak_hadir') {
+                  acc.tidakHadir++;
+                }
+                return acc;
+              }, { hadir: 0, tidakHadir: 0 });
+              
+              document.querySelector('.stats-hadir .text-4xl').textContent = String(stats.hadir).padStart(2, '0');
+              document.querySelector('.stats-tidakhadir .text-4xl').textContent = String(stats.tidakHadir).padStart(2, '0');
+              document.querySelector('.stats-total .text-4xl').textContent = String(stats.hadir + stats.tidakHadir).padStart(2, '0');
+            }
+            
+            // Initial display
+            displayComments();
+            updateStats();
+          </script>
+  </section>
+
+  <script>
+    // Navigation dots functionality
+    const navDots = document.querySelectorAll('.nav-dot');
+    
+    function updateActiveDot() {
+      const sections = document.querySelectorAll('.section');
+      const scrollPosition = window.scrollY;
+
+      sections.forEach((section, index) => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+
+        if (scrollPosition >= sectionTop - sectionHeight/3 && 
+            scrollPosition < sectionTop + sectionHeight - sectionHeight/3) {
+          navDots.forEach(dot => dot.classList.remove('active'));
+          navDots[index].classList.add('active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateActiveDot);
+
+    navDots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        const sectionId = dot.dataset.section;
+        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Keep existing scripts from individual components
+    // ...existing countdown script from 3.html...
+    // ...existing comments script from 5.html...
+  </script>
+</body>
+</html>
